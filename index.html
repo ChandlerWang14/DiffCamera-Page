@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <meta charset="utf-8">
+  <meta name="description"
+        content="DiffCamera: Arbitrary Refocusing on Images">
+  <meta name="keywords" content="Nerfies, D-NeRF, NeRF">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DiffCamera: Arbitrary Refocusing on Images</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/icon.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <!-- <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://keunhong.com">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://hypernerf.github.io">
+            HyperNeRF
+          </a>
+          <a class="navbar-item" href="https://nerfies.github.io">
+            Nerfies
+          </a>
+          <a class="navbar-item" href="https://latentfusion.github.io">
+            LatentFusion
+          </a>
+          <a class="navbar-item" href="https://photoshape.github.io">
+            PhotoShape
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div> -->
+</nav>
+
+
+<section class="hero banner" style="background-image: url('./static/images/overlay.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+  <div class="hero-body" style="color: white; background-color: rgba(0, 0, 0, 0.5);">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title" style="color: white;"> <span style="color: rgb(216, 147, 8);">DiffCamera</span>: Arbitrary Refocusing on Images</h1>
+          <div class="is-size-5 publication-authors" style="color: white;">
+            <span class="author-block"></span>
+            <a href="https://chandlerwang14.github.io/" target="_blank" style="color: rgb(170,170,170) !important; text-decoration: underline;">Yiyang Wang</a><sup>1</sup>,&thinsp;</span>
+            <span class="author-block"></span>
+              <a href="https://xavierchen34.github.io" target="_blank" style="color: rgb(170,170,170) !important; text-decoration: underline;">Xi Chen</a><sup>1</sup>,</span>
+            <span class="author-block"></span>
+              <a href="https://xuxiaogang.com" target="_blank" style="color: rgb(170,170,170) !important; text-decoration: underline;">Xiaogang Xu</a><sup>2</sup>,
+            </span>
+            <span class="author-block"></span>
+              <a href="https://scholar.google.com/citations?user=8zksQb4AAAAJ&hl=zh-CN" target="_blank" style="color: rgb(170,170,170) !important; text-decoration: underline;">Yu Liu</a><sup>3</sup>,
+            </span>
+            <span class="author-block"></span>
+              <a href="https://hszhao.github.io" target="_blank" style="color: rgb(170,170,170) !important; text-decoration: underline;">Hengshuang Zhao</a><sup>1</sup>,
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors" style="color: rgb(170,170,170);">
+            <span class="author-block"><sup>1</sup>The University of Hong Kong,</span>
+            <span class="author-block"><sup>2</sup>The Chinese University of Hong Kong,</span>
+            <span class="author-block"><sup>3</sup>Tongyi Lab</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links" >
+              <!-- PDF Link. -->
+              <span class="link-block" >
+                <a href="https://arxiv.org/pdf/2509.26599"
+                   class="external-link button is-normal is-rounded is-white">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2509.26599"
+                   class="external-link button is-normal is-rounded is-white">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="."
+                   class="external-link button is-normal is-rounded is-white">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="."
+                   class="external-link button is-normal is-rounded is-white">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code (Soon)</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <!-- <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-white">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <!-- Paper video. -->
+    <!-- <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div> -->
+    <div class="column">
+        <div class="content">
+          <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/DiffCamera Demo Video.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    <!--/ Paper video. -->
+
+  </div>
+</section>
+
+<section class="hero is-light is-small" style="padding-top: 3rem; padding-bottom: 3rem;">
+<div class="container is-max-desktop" style="padding: 2rem 1rem;">
+  <div class="hero-body has-text-centered">
+   <img src="./static/images/teaser.jpg" alt="DiffCamera Demo">
+
+<h2 class="subtitle has-text-centered" style="text-align: justify; font-family: 'Georgia', 'Times New Roman', serif;">
+  <span style="color: red;">Red frame</span>: target focus point ; 
+  <span style="color: rgb(80, 236, 23);">Green frame</span>: focus point of the current image.
+</h2>
+
+<img src="./static/images/refocus2.png" alt="DiffCamera Demo"
+     style="max-width: 100%; height: auto; margin-bottom: 2rem;">
+
+  </div>
+</div>
+</section>
+
+<section class="section" style="padding-top: 3rem; padding-bottom: 3rem;">
+<div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            The depth-of-field (DoF) effect, which introduces aesthetically pleasing blur, 
+            enhances photographic quality but is fixed and difficult to modify once the image has been created. 
+            This becomes problematic when the applied blur is undesirable (e.g., the subject is out of focus).
+          </p>
+           To address this, we propose DiffCamera, a model that enables flexible refocusing of a created image conditioned on an arbitrary new focus point and a blur level. 
+           As a pioneer work, we design a diffusion transformer framework for refocusing learning. 
+           However, the training requires pairs of data with different focus planes and bokeh levels in the same scene, 
+           which are hard to acquire. 
+           To overcome this limitation, we develop a simulation-based pipeline to generate large-scale image pairs with varying focus planes and bokeh levels. 
+           With the simulated data, we find that training with only a vanilla diffusion objective often leads to incorrect DoF behaviors due to the complexity of the task. 
+           This requires a stronger constraint during training. Inspired by the photographic principle that photos of different focus planes can be linearly blended into a multi-focus image, 
+           we propose a stacking constraint during training to enforce precise DoF manipulation. This constraint enhances model training by imposing physically grounded refocusing behavior that the focusing results should be faithfully aligned with the scene structure and the camera conditions so that they can be combined into the correct multi-focus image. We also construct a benchmark to evaluate the effectiveness of our refocusing model. 
+           Extensive experiments demonstrate that DiffCamera supports stable refocusing across a wide range of scenes, providing unprecedented control over DoF adjustments for photography and generative AI applications.
+          </div>
+      </div>
+    </div>
+</section>
+
+<section class="hero is-light is-small">
+<div class="container is-max-desktop">
+  <div class="hero-body has-text-centered">
+    <h2 class="title is-3">Overall Framework of DiffCamera</h2>
+    <img src="./static/images/pipeline.png" alt="DiffCamera Demo" style="max-width: 100%; height: auto;">
+    <h2 class="subtitle" style="text-align: justify; color: rgba(0, 0, 0, 0.5);">
+      We convert the reference image \(I_R\) and camera conditions \(f_x, f_y, b\) into tokens using a VAE encoder and a learnable linear projection layer respectively and input them into a diffusion transformer as shown on the left side.
+      The right side visualizes the learning objective of the stacking constraint, where the two diffusion transformers share the same weights. The VAEs are all frozen and the diffusion transformer is trainable.
+    </h2>
+  </div>
+</div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered">
+      <div class="column is-full-width has-text-centered">
+        <h2 class="title is-3">Consistent Bokeh Refocus</h2>
+        <div class="content has-text-justified">
+          <p>
+            The left image shows the input image where the snowman is slightly out of focus.
+            The right image shows the refocus result where the snowman is in focus, and you can use the slider to control the bokeh level.
+          </p>
+        </div>
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-6 has-text-centered">
+            <img src="./static/images/snowman_start.jpg"
+                 class="interpolation-image"
+                 alt="Interpolate start reference image."/>
+            <p>Input Image</p>
+          </div>
+          <div class="column interpolation-video-column">
+            <div id="interpolation-image-wrapper">
+              Loading...
+            </div>
+            <input class="slider is-fullwidth is-large is-info"
+                   id="interpolation-slider"
+                   step="1" min="0" max="3" value="0" type="range">
+          </div>
+          <!-- <div class="column is-3 has-text-centered">
+            <img src="./static/images/interpolate_end.jpg"
+                 class="interpolation-image"
+                 alt="Interpolation end reference image."/>
+            <p class="is-bold">End Frame</p>
+          </div> -->
+        </div>
+        <br/>
+
+         <img src="./static/images/consistent1.png" alt="DiffCamera Demo"
+     style="max-width: 100%; height: auto; padding-top: 3rem;">
+
+    </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero is-light is-small" style="padding-top: 3rem">
+<div class="container is-centered has-text-centered">
+  <h2 class="title is-3" style="margin-bottom: 1rem;">Refocus on Any Position With Different Bokeh Levels</h2>
+  <div class="hero-body has-text-centered" style="padding-top: 0;">
+
+  <img src="./static/images/refocus1.png" alt="DiffCamera Demo"
+     style="max-width: 100%; height: auto;">
+
+  <img src="./static/images/realworld.png" alt="DiffCamera Demo"
+     style="max-width: 100%; height: auto;">
+
+  </div>
+</div>
+</section>
+
+
+
+
+
+<section class="section" id="BibTeX" style="padding-top: 3rem; padding-bottom: 3rem;">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{wang2025diffcamera,
+  title={DiffCamera: Arbitrary Refocusing on Images},
+  author={Wang, Yiyang and Chen, Xi and Xu, Xiaogang and Liu, Yu and Zhao, Hengshuang},
+  journal={SIGGRAPH Asia 2025 Conference Papers},
+  year={2025}
+}</code></pre>
+  </div>
+</section>
+
+
+
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="https://arxiv.org/pdf/2509.26599">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="." class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content text-center">
+          <span style="color: red;"> 
+                The images used in the demo videos are for academic purposes only and are not for commercial use. If you
+                feel that the images we use infringe your rights, please contact us and we will delete them immediately
+                and express our sincere apologies. Contact email: yiyangwang@connect.hku.hk</span>
+              The source code of this webpage is borrowed from the <a href="https://nerfies.github.io"
+                target="_blank">Nerfies</a> project webpage.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
